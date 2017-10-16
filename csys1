@@ -1,0 +1,48 @@
+Option Strict On
+Imports System
+Imports System.Windows.Forms
+Imports NXOpen
+
+Module ReadExcelData
+Sub Main (ByVal args() As String) 
+
+Dim theSession As NXOpen.Session = NXOpen.Session.GetSession()
+Dim workPart As NXOpen.Part = theSession.Parts.Work
+
+Dim nullNXOpen_Features_Feature As NXOpen.Features.Feature = Nothing
+
+Dim datumCsysBuilder1 As NXOpen.Features.DatumCsysBuilder
+datumCsysBuilder1 = workPart.Features.CreateDatumCsysBuilder(nullNXOpen_Features_Feature)
+
+Dim origin1 As NXOpen.Point3d = New NXOpen.Point3d(226.124, -1390.968, -118.298)
+Dim xDirection1 As NXOpen.Vector3d = New NXOpen.Vector3d(1.0, 0.0, 0.0)
+Dim yDirection1 As NXOpen.Vector3d = New NXOpen.Vector3d(0.0, 1.0, 0.0)
+Dim xform1 As NXOpen.Xform
+xform1 = workPart.Xforms.CreateXform(origin1, xDirection1, yDirection1, NXOpen.SmartObject.UpdateOption.WithinModeling, 1.0)
+
+Dim orientation1 As NXOpen.Matrix3x3
+orientation1.Xx = 1.0
+orientation1.Xy = 0.0
+orientation1.Xz = 0.0
+orientation1.Yx = 0.0
+orientation1.Yy = 1.0
+orientation1.Yz = 0.0
+orientation1.Zx = 0.0
+orientation1.Zy = 0.0
+orientation1.Zz = 1.0
+xform1.SetOrientation(orientation1)
+
+Dim cartesianCoordinateSystem1 As NXOpen.CartesianCoordinateSystem
+cartesianCoordinateSystem1 = workPart.CoordinateSystems.CreateCoordinateSystem(xform1, NXOpen.SmartObject.UpdateOption.WithinModeling)
+
+datumCsysBuilder1.Csys = cartesianCoordinateSystem1
+
+datumCsysBuilder1.DisplayScaleFactor = 1.0
+
+Dim nXObject1 As NXOpen.NXObject
+nXObject1 = datumCsysBuilder1.Commit()
+
+datumCsysBuilder1.Destroy()
+
+End Sub
+End Module
