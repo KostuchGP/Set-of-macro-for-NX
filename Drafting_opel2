@@ -1,0 +1,585 @@
+' NX 9.0.2.5
+' Journal created by RWSwiss on Thu Apr 07 15:28:29 2016 W. Europe Daylight Time
+'
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module NXJournal
+    Sub Main(ByVal args() As String)
+
+        Dim theSession As Session = Session.GetSession()
+        Dim workPart As Part = theSession.Parts.Work
+
+        Dim displayPart As Part = theSession.Parts.Display
+
+        Dim preferencesBuilder1 As Drafting.PreferencesBuilder
+        preferencesBuilder1 = workPart.SettingsManager.CreatePreferencesBuilder()
+		
+		'Potrzebne do późniejszych kolorów
+		Dim viewStyleFPCurvesBuilder1 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder1 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.BendCenterLine)
+
+		Dim viewStyleFPCurvesBuilder2 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder2 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.BendUpCenterLine)
+
+		Dim viewStyleFPCurvesBuilder3 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder3 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.BendDownCenterLine)
+
+		Dim viewStyleFPCurvesBuilder4 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder4 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.BendTangentLine)
+
+		Dim viewStyleFPCurvesBuilder5 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder5 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.OuterMoldLine)
+
+		Dim viewStyleFPCurvesBuilder6 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder6 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.InnerMoldLine)
+
+		Dim viewStyleFPCurvesBuilder7 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder7 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.ExteriorCurves)
+
+		Dim viewStyleFPCurvesBuilder8 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder8 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.InteriorCurves)
+
+		Dim viewStyleFPCurvesBuilder9 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder9 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.InteriorCutoutCurves)
+
+		Dim viewStyleFPCurvesBuilder10 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder10 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.InteriorFeatureCurves)
+
+		Dim viewStyleFPCurvesBuilder11 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder11 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.LighteningHoleCenter)
+
+		Dim viewStyleFPCurvesBuilder12 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder12 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.JoggleLine)
+
+		Dim viewStyleFPCurvesBuilder13 As Drawings.ViewStyleFPCurvesBuilder
+		viewStyleFPCurvesBuilder13 = preferencesBuilder1.ViewStyle.GetViewStyleFPCurve(SheetMetal.FlatPatternSettings.FlatPatternObjectType.AddedTopGeometry)
+		
+		'LetteringStyle
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AlignPosition = Annotations.AlignmentPosition.MidCenter
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.HorizontalTextJustification = Annotations.TextJustification.Center
+		
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextColor = workPart.Colors.Find("White")
+		
+        Dim fontIndex1 As Integer
+		
+		fontIndex1 = workPart.Fonts.AddFont("leroy", FontCollection.Type.Nx)
+		
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextFont = 5
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextSize = 3.5
+		
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextLineWidth = Annotations.LineWidth.Thin
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralNxTextCharacterSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralStandardTextCharacterSpaceFactor = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextAspectRatio = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GeneralTextLineSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.Angle = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.GdtFrameHeightFactor = 2.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.SymbolFontFile = "Tahoma"
+		
+		'LineArrowStyle
+		
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.DimArrowDisplay = Annotations.ArrowDisplay.Two
+		
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.TextArrowPlacement = Annotations.TextPlacement.ManualArrowsIn
+
+		'preferencesBuilder1.AnnotationStyle.DimensionStyle.ReverseArrowDirection = False - 'wyskakuje blad
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowheadColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstExtensionLineColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondExtensionLineColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowheadColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowLineColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowLineColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowheadFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstExtensionLineFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondExtensionLineFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowheadFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowLineFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowLineFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowType = Annotations.ArrowheadType.FilledArrow
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowType = Annotations.ArrowheadType.FilledArrow
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowheadWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstExtensionLineWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondExtensionLineWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowheadWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstArrowLineWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondArrowLineWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.ArrowheadLength = 3.999
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.ArrowheadIncludedAngle = 15.0
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.DotArrowheadDiameter = 1.0
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.TextToLineDistance = 0.5
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.StubLength = 1.5
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.TextOverStubFactor = 0.1
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.LeaderLocation = Annotations.VerticalTextJustification.Middle
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.TextOverLeaderGapFactor = 0.0
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.AllAroundSymbolSize = 3.5
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.FirstPosToExtensionLineDistance = 0.025
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.SecondPosToExtensionLineDistance = 0.025
+		
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.LinePastArrowDistance = 1.5
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.ObliqueExtensionLineAngle = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LineArrowStyle.DatumLengthPastArrow = 3.809
+		
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.UserDefinedSymbolColor = workPart.Colors.Find("White")
+		
+		'View\Common	
+		
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.Silhouettes = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.UVGrid = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.Reference = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.Centerlines = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.AutomaticAnchorPoint = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.AutomaticUpdate = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.BoundaryStatus = False
+		
+		preferencesBuilder1.ViewStyle.ViewStyleGeneral.AngleDecimalPointCharacter = Preferences.DecimalPointCharacter.Period
+		
+		preferencesBuilder1.ViewStyle.ViewStyleVisibleLines.VisibleColor = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleVisibleLines.VisibleFont = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleVisibleLines.VisibleWidth = Preferences.Width.Original
+		
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.HiddenLine = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.EdgesHiddenByEdges = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.ReferenceEdgesOnly = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.SelfHidden = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.IncludeModelCurves = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.InterferingSolids = Preferences.HiddenLineInterferingSolidsOption.Yes
+		
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.Color = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.Font = Preferences.Font.Dashed
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.Font = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleHiddenLines.Width = Preferences.Width.One
+		
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.VirtualIntersections = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.AdjacentBlends = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.EndGaps = False
+		
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.Color = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.Font = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.Width = Preferences.Width.Original
+		
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.CreateGaps = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.VisibleColor = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.HiddenColor = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.VisibleFont = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.HiddenFont = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.VisibleWidth = Preferences.Width.Original
+
+		preferencesBuilder1.ViewStyle.ViewStyleTraceLines.HiddenWidth = Preferences.Width.Original
+		
+		preferencesBuilder1.ViewStyle.ViewStyleThreads.StandardData = 4
+
+		preferencesBuilder1.ViewStyle.ViewStyleThreads.TrueHiddenLine = False
+		
+		preferencesBuilder1.ViewStyle.ViewStyleThreads.OverrideVisibleThreadColor = workPart.Colors.Find("Black")
+		
+		preferencesBuilder1.ViewStyle.ViewStyleInheritPmi.Pmi = Preferences.PmiOption.None
+
+		preferencesBuilder1.ViewStyle.ViewStyleInheritPmi.CrosshatchPmiLwsv = False
+		
+		preferencesBuilder1.ViewStyle.ViewStyleShading.VisibleWireframeColor = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleShading.HiddenWireframeColor = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleShading.CutFaceColor = workPart.Colors.Find("Orange")
+		
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.SmoothEdge = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.EndGaps = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.Tolerance = False
+		
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.Color = workPart.Colors.Find("Black")
+
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.Font = Preferences.Font.Invisible
+
+		preferencesBuilder1.ViewStyle.ViewStyleSmoothEdges.Width = Preferences.Width.One
+		
+		preferencesBuilder1.ViewStyle.ViewStyleVirtualIntersections.EndGapsDistance = 3.0
+		
+		'Views arrows itp
+		
+		preferencesBuilder1.ViewLabel.LabelCharacterHeightFactor = 1.5
+
+		preferencesBuilder1.ViewLabel.PrefixCharacterHeightFactor = 1.0
+
+		preferencesBuilder1.ViewLabel.ScaleCharacterHeightFactor = 1.5
+		
+		preferencesBuilder1.ViewStyle.ViewProjectedViewSettings.DisplayArrowOnParentView = Drawings.ViewProjectedViewSettingsBuilder.DisplayArrowOnParentViewType.No
+		
+		preferencesBuilder1.ViewProjectedLabel.LabelCharacterHeightFactor = 1.5
+
+		preferencesBuilder1.ViewProjectedLabel.PrefixCharacterHeightFactor = 1.0
+
+		preferencesBuilder1.ViewProjectedLabel.ScaleCharacterHeightFactor = 1.5
+		
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.ArrowHeadLength = 6.0
+
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.ArrowHeadAngle = 20.0
+
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.ArrowLineLength = 15.0
+		
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.LineColorFontWidth.LineWidth = DisplayableObject.ObjectWidth.Three
+
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.DisplayLabel = Drawings.ViewProjectedArrowSettingsBuilder.DispalyLabelType.OnReferenceArrowAndView
+
+		preferencesBuilder1.ViewStyle.ViewProjectedArrowSettings.ArrowHeadStyle = Drawings.ViewProjectedArrowSettingsBuilder.DimensionsStyleType.Filled
+		
+		preferencesBuilder1.ViewStyle.ViewStyleSection.Background = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.Foreground = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.SheetBodies = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.Bendlines = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.Crosshatch = True
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.HiddenLineHatching = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.AssemblyTolerance = False
+
+		preferencesBuilder1.ViewStyle.ViewStyleSection.RestrictCrosshatchAngle = False
+		
+		preferencesBuilder1.ViewSectionLabel.LabelCharacterHeightFactor = 1.5
+
+		preferencesBuilder1.ViewSectionLabel.PrefixCharacterHeightFactor = 1.0
+
+		preferencesBuilder1.ViewSectionLabel.ValueFormat = Drawings.ScaleValueFormatTypes.SingleLineFraction
+
+		preferencesBuilder1.ViewSectionLabel.ScaleCharacterHeightFactor = 1.5
+		
+		preferencesBuilder1.ViewStyle.ViewStyleDetail.ViewBoundaryColor = workPart.Colors.Find("Green")
+
+		preferencesBuilder1.ViewStyle.ViewStyleDetail.ViewBoundaryFont = Preferences.Font.Phantom
+
+		preferencesBuilder1.ViewStyle.ViewStyleDetail.ViewBoundaryWidth = Preferences.Width.One
+
+		preferencesBuilder1.ViewStyle.ViewStyleDetail.CreateIndependentDetailView = True
+				
+		preferencesBuilder1.ViewDetailLabel.LabelPrefix = "VIEW"
+
+		preferencesBuilder1.ViewDetailLabel.LabelCharacterHeightFactor = 1.5
+
+		preferencesBuilder1.ViewDetailLabel.LabelParentDisplay = Drawings.ViewDetailLabelBuilder.LabelParentDisplayTypes.Embedded
+
+		preferencesBuilder1.ViewDetailLabel.TextGapFactor = 1.0
+
+		preferencesBuilder1.ViewDetailLabel.PrefixCharacterHeightFactor = 1.0
+
+		preferencesBuilder1.ViewDetailLabel.ValueFormat = Drawings.ScaleValueFormatTypes.CommonFraction
+
+		preferencesBuilder1.ViewDetailLabel.ScaleCharacterHeightFactor = 1.5
+		
+		'do tego jest odwołanie na początku
+		viewStyleFPCurvesBuilder1.Color = workPart.Colors.Find("Black")
+		
+		viewStyleFPCurvesBuilder2.Color = workPart.Colors.Find("Black")
+
+		viewStyleFPCurvesBuilder3.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder4.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder5.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder6.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder7.Color = workPart.Colors.Find("Black")
+
+		viewStyleFPCurvesBuilder8.Color = workPart.Colors.Find("Black")
+
+		viewStyleFPCurvesBuilder9.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder10.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder11.Color = workPart.Colors.Find("Blue")
+
+		viewStyleFPCurvesBuilder12.Color = workPart.Colors.Find("Black")
+
+		viewStyleFPCurvesBuilder13.Color = workPart.Colors.Find("Black")
+		
+		preferencesBuilder1.ViewSectionLine.LineColorFontWidth.LineWidth = DisplayableObject.ObjectWidth.One
+	
+		preferencesBuilder1.ViewSectionLine.LineColorFontWidth.LineColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.ViewSectionLine.ArrowheadLength = 3.0
+
+		preferencesBuilder1.ViewSectionLine.ArrowheadAngle = 15.0
+
+		preferencesBuilder1.ViewSectionLine.ArrowLength = 12.5
+
+		preferencesBuilder1.ViewSectionLine.BorderToArrowDistance = 6.0
+
+		preferencesBuilder1.ViewSectionLine.Overhang = 3.0
+	
+		'Drafting
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.AngularToleranceValuePrecision = 2
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ToleranceValuePrecision = 2
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.UpperToleranceDegrees = 0.1
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.UpperToleranceMetric = 0.1
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.LowerToleranceDegrees = -0.1
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.LowerToleranceMetric = -0.1
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.FitToleranceSeparator = True
+		
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.FitToleranceParentheses = True
+	
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.ToleranceAngularFormat = Annotations.AngularDimensionFormat.WholeDegrees
+		
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.DisplayLeadingToleranceZeros = True
+		
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.ConvertPrimaryTolerance = False
+		
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.DualToleranceValuePrecision = 2
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.DualDimensionValuePrecision = 2
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.NarrowDisplayType = Annotations.NarrowDisplayOption.None
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.NarrowTextOrientation = Annotations.NarrowTextOrientation.Horizontal
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ChamferForm = Annotations.ChamferForm.Symbol
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ChamferSeparator = Annotations.ChamferSeparatorType.UppercaseX
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ChamferLeaderType = Annotations.ChamferLeaderPlacement.Perpendicular
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ChamferStubType = Annotations.ChamferStubType.TextAfter
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.LineBetweenArrows = True
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.TrimDimLine = Annotations.TrimDimensionLineStyle.Trim
+	
+		preferencesBuilder1.AnnotationStyle.OrdinateStyle.DisplayDimensionLine = Annotations.OrdinateLineArrowDisplayOption.None
+
+		preferencesBuilder1.AnnotationStyle.OrdinateStyle.AlignSymbolWithBaseline = True
+
+		preferencesBuilder1.AnnotationStyle.OrdinateStyle.DisplayNameStyle = Annotations.OrdinateOriginDisplayOption.OrdinateSetName
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.AngularDimensionValuePrecision = 2
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.DimensionValuePrecision = 2
+
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.DecimalPointCharacter = Annotations.DecimalPointCharacter.Period
+
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.DisplayLeadingDimensionZeros = True
+
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.DisplayTrailingZeros = False
+
+		preferencesBuilder1.AnnotationStyle.UnitsStyle.FractionalDisplay = False
+		
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.Orientation = Annotations.TextOrientation.OverDimensionLine
+
+		preferencesBuilder1.AnnotationStyle.OrdinateStyle.OrdinateTextOrientation = Annotations.TextOrientation.OverDimensionLine
+	
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.InspectionDimension = False
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ToleranceType = Annotations.ToleranceType.None
+	
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextColor = workPart.Colors.Find("White")
+
+		Dim fontIndex2 As Integer
+		fontIndex2 = workPart.Fonts.AddFont("blockfont", FontCollection.Type.Nx)
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextFont = 1
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextLineWidth = Annotations.LineWidth.Thin
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextSize = 2.5
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedNxTextCharacterSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedStandardTextCharacterSpaceFactor = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextAspectRatio = 0.8
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextLineSpaceFactor = 2.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.AppendedTextSpaceFactor = 1.0
+
+
+
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimLineSpaceFactor = 0.5
+
+		Dim fontIndex3 As Integer
+		fontIndex3 = workPart.Fonts.AddFont("blockfont", FontCollection.Type.Nx)
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextFont = 1
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextLineWidth = Annotations.LineWidth.Thin
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionNxTextCharacterSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionStandardTextCharacterSpaceFactor = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextAspectRatio = 0.8
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextLineSpaceFactor = 2.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.DimensionTextSize = 2.5
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextColor = workPart.Colors.Find("White")
+
+		Dim fontIndex4 As Integer
+		fontIndex4 = workPart.Fonts.AddFont("blockfont", FontCollection.Type.Nx)
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextFont = 1
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextLineWidth = Annotations.LineWidth.Thin
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextSize = 2.5
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceNxTextCharacterSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceStandardTextCharacterSpaceFactor = 0.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextAspectRatio = 0.8
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextLineSpaceFactor = 2.0
+
+		preferencesBuilder1.AnnotationStyle.LetteringStyle.ToleranceTextSpaceFactor = 1.0
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ReferenceDimensionPrefix = ""
+
+		preferencesBuilder1.AnnotationStyle.DimensionStyle.ReferenceDimensionSuffix = "REF"
+	
+		'Annotation	
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.GdtSymbolColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.GdtSymbolFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.GdtSymbolWidth = Annotations.LineWidth.One
+	
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IdSymbolColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IdSymbolFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IdSymbolWidth = Annotations.LineWidth.One
+	
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.SurfaceFinishColor = workPart.Colors.Find("Blue")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.SurfaceFinishFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.SurfaceFinishWidth = Annotations.LineWidth.One
+		
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldSymbolFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldSymbolWidth = Annotations.LineWidth.One
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldSymbolColor = workPart.Colors.Find("Brown")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldSpaceFactor = 1.0
+	
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldSymbolSizeFactor = 1.0
+		
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.WeldLineGap = 0
+	
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.TargetSymbolColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.TargetSymbolFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.TargetSymbolWidth = Annotations.LineWidth.One
+		
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IntersectionSymbolColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IntersectionSymbolFont = DisplayableObject.ObjectFont.Solid
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.IntersectionSymbolWidth = Annotations.LineWidth.One
+		
+		preferencesBuilder1.AnnotationStyle.HatchStyle.HatchDistance = 2.5
+
+		preferencesBuilder1.AnnotationStyle.HatchStyle.Color = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.HatchStyle.Tolerance = 0.1
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.CenterlineSymbolColor = workPart.Colors.Find("White")
+
+		preferencesBuilder1.AnnotationStyle.SymbolStyle.CenterlineSymbolWidth = Annotations.LineWidth.One
+	
+	
+		'Object start
+        Dim nXObject1 As NXObject
+        nXObject1 = preferencesBuilder1.Commit()
+
+        preferencesBuilder1.Destroy()
+		'Object end	
+		
+    End Sub
+End Module
