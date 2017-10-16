@@ -1,0 +1,49 @@
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module Unlock1
+
+    Private text As String
+
+    Sub Main(ByVal args() As String)
+
+        Dim theSession As Session = Session.GetSession()
+        Dim workPart As Part = theSession.Parts.Work
+
+        Dim displayPart As Part = theSession.Parts.Display
+
+        Dim markId1 As Session.UndoMarkId
+        markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Unlock")
+
+        If workPart Is Nothing Then Return
+
+        If SelectText() Then
+            Try
+              workPart.SetUserAttributeLock(text, NXObject.AttributeType.Any, False)
+              Catch ex As Exception
+            End Try
+
+        End If
+	Return
+
+    End Sub
+
+    Function SelectText() As Boolean
+
+        text = InputBox("Wpisz nazwe atrybutu", "UNLOCK cudo", "")
+
+        If text.Length <> 0 Then
+            SelectText = True
+        End If
+
+    End Function
+
+    Public Function GetUnloadOption(ByVal dummy As String) As Integer
+
+        'Unloads the image when the NX session terminates
+        GetUnloadOption = NXOpen.Session.LibraryUnloadOption.AtTermination
+
+    End Function
+
+End Module
