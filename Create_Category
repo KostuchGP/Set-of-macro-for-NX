@@ -1,0 +1,84 @@
+' NX 9.0.2.5
+' Journal created by RWSwiss on Thu Apr 07 12:48:22 2016 W. Europe Daylight Time
+'
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module NXJournal
+Sub Main (ByVal args() As String) 
+
+Dim theSession As Session = Session.GetSession()
+Dim workPart As Part = theSession.Parts.Work
+
+Dim displayPart As Part = theSession.Parts.Display
+
+' ----------------------------------------------
+'   Menu: File->Properties
+' ----------------------------------------------
+Dim markId1 As Session.UndoMarkId
+markId1 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Start")
+
+Dim objects1(0) As NXObject
+objects1(0) = workPart
+Dim attributePropertiesBuilder1 As AttributePropertiesBuilder
+attributePropertiesBuilder1 = theSession.AttributeManager.CreateAttributePropertiesBuilder(workPart, objects1, AttributePropertiesBuilder.OperationType.None)
+
+
+
+Dim objects2(0) As NXObject
+objects2(0) = workPart
+attributePropertiesBuilder1.SetAttributeObjects(objects2)
+
+theSession.SetUndoMarkName(markId1, "Displayed Part Properties Dialog")
+
+attributePropertiesBuilder1.Category = "Materials"
+
+attributePropertiesBuilder1.Title = "MaterialPreferred"
+
+attributePropertiesBuilder1.StringValue = ""
+
+attributePropertiesBuilder1.StringValue = "jazda1"
+
+Dim markId2 As Session.UndoMarkId
+markId2 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Accept Edit")
+
+Dim changed1 As Boolean
+changed1 = attributePropertiesBuilder1.CreateAttribute()
+
+
+Dim objects3(0) As NXObject
+objects3(0) = workPart
+attributePropertiesBuilder1.SetAttributeObjects(objects3)
+
+theSession.SetUndoMarkName(markId1, "Displayed Part Properties Dialog")
+
+attributePropertiesBuilder1.Category = "DB Component Instance"
+
+attributePropertiesBuilder1.Title = "CALLOUT"
+
+attributePropertiesBuilder1.StringValue = ""
+
+attributePropertiesBuilder1.StringValue = "jazda2"
+
+Dim markId3 As Session.UndoMarkId
+markId3 = theSession.SetUndoMark(Session.MarkVisibility.Visible, "Accept Edit")
+
+
+Dim changed2 As Boolean
+changed2 = attributePropertiesBuilder1.CreateAttribute()
+
+
+
+
+Dim markId4 As Session.UndoMarkId
+markId4 = theSession.SetUndoMark(Session.MarkVisibility.Invisible, "Displayed Part Properties")
+
+Dim nXObject1 As NXObject
+nXObject1 = attributePropertiesBuilder1.Commit()
+
+workPart.PartPreviewMode = BasePart.PartPreview.OnSave
+
+
+End Sub
+End Module
