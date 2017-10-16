@@ -1,0 +1,23 @@
+' NX 9.0.2.5
+' Journal created by RWSwiss on Wed Apr 13 12:46:07 2016 W. Europe Daylight Time
+'
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module NXJournal
+Sub Main (ByVal args() As String) 
+
+Dim theSession As Session = Session.GetSession()
+Dim workPart As Part = theSession.Parts.Work
+
+Dim displayPart As Part = theSession.Parts.Display
+
+Dim i(0) As Integer
+   i(0) = 5
+Dim category1 As Layer.Category
+category1 = workPart.LayerCategories.CreateCategory("Kategoria", "Opis", i)
+
+
+End Sub
+End Module
