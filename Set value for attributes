@@ -1,0 +1,19 @@
+' Delete all unlocked part attributes from the workpart.
+Option Strict On
+Imports System
+Imports NXOpen
+
+Module NXJournal
+
+    Dim theSession As Session = Session.GetSession()
+    Dim theUI As UI = UI.GetUI()
+    Dim displayPart As Part = theSession.Parts.Display
+	
+Sub Main (ByVal args() As String)
+
+    Dim workPart As Part = theSession.Parts.Work
+
+	workPart.SetAttribute("Startpart_Version", "1.0.0.6")
+
+End Sub
+End Module 
