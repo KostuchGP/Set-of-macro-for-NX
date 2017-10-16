@@ -1,0 +1,43 @@
+' Delete all unlocked part attributes from the workpart.
+Option Strict On
+Imports System
+Imports NXOpen
+
+Module NXJournal
+
+    Dim theSession As Session = Session.GetSession()
+    Dim theUI As UI = UI.GetUI()
+
+Sub Main (ByVal args() As String)
+
+    Dim workPart As Part = theSession.Parts.Work
+
+    Dim atts() As NXObject.AttributeInformation = workPart.GetAttributeTitlesByType(NXObject.AttributeType.Any)
+    Dim titles(atts.Length - 1) As String
+
+    For ii As Integer = 0 To atts.Length - 1
+        titles(ii) = atts(ii).Title
+    Next
+
+    Dim locked As Boolean = Nothing
+    For ii As Integer = 0 To titles.Length - 1
+        Try   
+            locked = workPart.GetUserAttributeLock( titles(ii), NXObject.AttributeType.Any)
+            Echo("")
+            Echo(titles(ii) & " locked = " & locked.ToString)
+            If locked = False   
+                 workPart.DeleteUserAttribute(NXObject.AttributeType.Any, titles(ii), True, Update.Option.Now)
+            End If
+            Catch e As Exception
+                theSession.ListingWindow.WriteLine("Error: " & e.Message)
+        End Try
+    Next
+
+End Sub
+
+    Sub Echo(ByVal output As String)
+        theSession.ListingWindow.Open()
+        theSession.ListingWindow.WriteLine(output)
+        theSession.LogFile.WriteLine(output)
+    End Sub
+End Module 
