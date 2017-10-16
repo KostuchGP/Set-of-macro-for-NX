@@ -1,0 +1,27 @@
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module NXJournal
+  Sub Main
+
+      Dim theSession As Session = Session.GetSession()
+
+      Dim workPart As Part = theSession.Parts.Work()
+
+      Dim workLayer() As Layer.Category = workPart.LayerCategories.ToArray()
+
+      For Each thisLayer As Layer.Category In workLayer
+
+         theSession.UpdateManager.AddToDeleteList(thisLayer)
+
+      Next
+
+      Dim myUndoMark As Session.UndoMarkId = _
+           theSession.SetUndoMark(Session.MarkVisibility.Invisible, "BeforeUndo")
+      theSession.UpdateManager.DoUpdate(myUndoMark)
+
+  MsgBox("Finished: Please click [OK ] button and check Layer-Category results", vbOKOnly, "Information:")
+
+  End Sub
+End Module
