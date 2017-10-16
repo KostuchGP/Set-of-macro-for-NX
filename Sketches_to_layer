@@ -1,0 +1,36 @@
+' NX 9.0.2.5
+' Journal created by RWSwiss on Thu Apr 14 11:50:57 2016 W. Europe Daylight Time
+'
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module NXJournal
+Sub Main (ByVal args() As String) 
+
+Dim theSession As Session = Session.GetSession()
+Dim workPart As Part = theSession.Parts.Work
+
+Dim displayPart As Part = theSession.Parts.Display
+
+Dim displayModification1 As DisplayModification
+displayModification1 = theSession.DisplayManager.NewDisplayModification()
+
+displayModification1.NewLayer = 8
+
+displayModification1.Apply(workPart.Sketches.ToArray)
+
+displayModification1.Dispose()
+
+Dim displayModification2 As DisplayModification
+displayModification2 = theSession.DisplayManager.NewDisplayModification()
+
+displayModification2.NewLayer = 5
+
+displayModification2.Apply(workPart.Bodies.ToArray)
+
+displayModification2.Dispose()
+
+
+End Sub
+End Module
