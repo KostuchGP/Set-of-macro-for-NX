@@ -1,0 +1,261 @@
+Option Strict Off
+Imports System
+Imports NXOpen
+
+Module Module1
+
+    '1 zmienna
+    Private Const _attributeTitle1 As String = "SHOWN_ON"
+    Public ReadOnly Property attributeTitle1() As String
+        Get
+            Return _attributeTitle1
+        End Get
+    End Property
+
+    Private _attributeValue1 As String = ""
+    Public Property attributeValue1() As String
+        Get
+            Return _attributeValue1
+        End Get
+        Set(ByVal value As String)
+            _attributeValue1 = value
+        End Set
+    End Property
+    'Koniec 1 zmiennej
+
+
+    Sub Main()
+
+        Dim theSession As Session = Session.GetSession()
+        If IsNothing(theSession.Parts.Work) Then
+            'active part required
+            Return
+        End If
+
+        Dim workPart As Part = theSession.Parts.Work
+
+        Dim myAttributeInfo1 As NXObject.AttributeInformation
+
+
+
+        '1 Pętla dla 1 zmiennej
+        Try
+            myAttributeInfo1 = workPart.GetUserAttribute(_attributeTitle1, NXObject.AttributeType.String, -1)
+            _attributeValue1 = myAttributeInfo1.StringValue
+
+        Catch ex As NXException
+            If ex.ErrorCode = 512008 Then
+                'attribute not found
+            Else
+                'unexpected error: show error message, undo, and exit journal
+                Return
+            End If
+
+        Finally
+
+        End Try
+
+
+        'create new form object
+        Dim myForm As New Form1
+        'set form object properties (current part attribute title and value)
+        '6 zmiennych
+        myForm.AttributeTitle1 = _attributeTitle1
+        myForm.AttributeValue1 = _attributeValue1
+		
+        'display our form
+        myForm.ShowDialog()
+
+        If myForm.Canceled Then
+            'user pressed cancel, exit journal
+            Return
+        Else
+            'user pressed OK, assign value from form to part attribute
+            _attributeValue1 = myForm.AttributeValue1
+            workPart.SetUserAttribute(_attributeTitle1, -1, _attributeValue1, Update.Option.Later)
+
+        End If
+
+    End Sub
+
+    Public Function GetUnloadOption(ByVal dummy As String) As Integer
+
+        'Unloads the image when the NX session terminates
+        'GetUnloadOption = NXOpen.Session.LibraryUnloadOption.AtTermination
+
+        '----Other unload options-------
+        'Unloads the image immediately after execution within NX
+        GetUnloadOption = NXOpen.Session.LibraryUnloadOption.Immediately
+
+        'Unloads the image explicitly, via an unload dialog
+        'GetUnloadOption = NXOpen.Session.LibraryUnloadOption.Explicitly
+        '-------------------------------
+
+    End Function
+
+End Module
+
+
+Public Class Form1
+
+    '1 zmienna
+    Private _frmAttributeTitle1 As String
+    Public Property AttributeTitle1() As String
+        Get
+            Return _frmAttributeTitle1
+        End Get
+        Set(ByVal value As String)
+            _frmAttributeTitle1 = value
+        End Set
+    End Property
+
+    Private _frmAttributeValue1 As String
+    Public Property AttributeValue1() As String
+        Get
+            Return _frmAttributeValue1
+        End Get
+        Set(ByVal value As String)
+            _frmAttributeValue1 = value
+        End Set
+    End Property
+    'Koniec 1 zmiennej
+
+    Private _canceled As Boolean = False
+    Public ReadOnly Property Canceled() As Boolean
+        Get
+            Return _canceled
+        End Get
+    End Property
+
+
+
+
+    Private Sub form1_Load(sender As System.Object, e As System.EventArgs) Handles MyBase.Load
+        Label1.Text = _frmAttributeTitle1
+        TextBox1.Text = _frmAttributeValue1
+
+    End Sub
+
+    Private Sub Button1_Click(sender As System.Object, e As System.EventArgs) Handles Button1.Click
+			_frmAttributeValue1 = TextBox1.Text.ToUpper
+												
+        Me.Close()
+
+    End Sub
+	
+	Private Sub Button2_Click(sender As System.Object, e As System.EventArgs) Handles Button2.Click
+        _canceled = True
+        Me.Close()
+    End Sub
+End Class
+
+
+
+<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()>
+Partial Class Form1
+    Inherits System.Windows.Forms.Form
+
+    Public Sub New()
+        InitializeComponent()
+        MiniSnap.UI.WinForm.SetApplicationIcon(Me)
+        MiniSnap.UI.WinForm.ReparentForm(Me)
+    End Sub
+
+    'Form overrides dispose to clean up the component list.
+    <System.Diagnostics.DebuggerNonUserCode()>
+    Protected Overrides Sub Dispose(ByVal disposing As Boolean)
+        Try
+            If disposing AndAlso components IsNot Nothing Then
+                components.Dispose()
+            End If
+        Finally
+            MyBase.Dispose(disposing)
+        End Try
+    End Sub
+
+    'Required by the Windows Form Designer
+    Private components As System.ComponentModel.IContainer
+
+    'NOTE: The following procedure is required by the Windows Form Designer
+    'It can be modified using the Windows Form Designer.  
+    'Do not modify it using the code editor.
+    <System.Diagnostics.DebuggerStepThrough()>
+    Private Sub InitializeComponent()
+        Me.Label1 = New System.Windows.Forms.Label()
+		Me.Button1 = New System.Windows.Forms.Button()
+        Me.Button2 = New System.Windows.Forms.Button()
+        Me.TextBox1 = New System.Windows.Forms.TextBox()
+        Me.SuspendLayout()
+        '
+        'Label1
+        '
+        Me.Label1.AutoSize = True
+        Me.Label1.Font = New System.Drawing.Font("Microsoft Sans Serif", 10.0!, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
+        Me.Label1.Location = New System.Drawing.Point(50, 35)
+        Me.Label1.Name = "Label1"
+        Me.Label1.Size = New System.Drawing.Size(59, 20)
+        Me.Label1.TabIndex = 0
+        Me.Label1.Text = "Label1"
+		'
+        'Button1
+        '
+        Me.Button1.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.Button1.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
+        Me.Button1.Location = New System.Drawing.Point(50, 252)
+        Me.Button1.Name = "Button1"
+        Me.Button1.Size = New System.Drawing.Size(89, 50)
+        Me.Button1.TabIndex = 1
+        Me.Button1.Text = "Confirm"
+        Me.Button1.UseVisualStyleBackColor = False
+        '
+        'Button2
+        '
+        Me.Button2.BackColor = System.Drawing.Color.FromArgb(CType(CType(192, Byte), Integer), CType(CType(192, Byte), Integer), CType(CType(0, Byte), Integer))
+        Me.Button2.Font = New System.Drawing.Font("Microsoft Sans Serif", 7.8!, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, CType(238, Byte))
+        Me.Button2.Location = New System.Drawing.Point(315, 252)
+        Me.Button2.Name = "Button2"
+        Me.Button2.Size = New System.Drawing.Size(89, 50)
+        Me.Button2.TabIndex = 1
+        Me.Button2.Text = "Cancel"
+        Me.Button2.UseVisualStyleBackColor = False
+        '
+        'TextBox1
+        '
+        Me.TextBox1.Location = New System.Drawing.Point(230, 35)
+        Me.TextBox1.Name = "TextBox1"
+        Me.TextBox1.Size = New System.Drawing.Size(120, 22)
+        Me.TextBox1.TabIndex = 2
+        '
+        'Form1
+        '
+        Me.AutoScaleDimensions = New System.Drawing.SizeF(8.0!, 16.0!)
+        Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
+        Me.BackColor = System.Drawing.SystemColors.GradientActiveCaption
+        Me.ClientSize = New System.Drawing.Size(441, 323)
+
+        Me.Controls.Add(Me.TextBox1)
+        Me.Controls.Add(Me.Button2)
+        Me.Controls.Add(Me.Button1)
+
+        Me.Controls.Add(Me.Label1)
+        Me.Margin = New System.Windows.Forms.Padding(4)
+        Me.Name = "Form1"
+        Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
+        Me.Text = "Change attribute"
+        Me.ResumeLayout(False)
+        Me.PerformLayout()
+
+    End Sub
+
+    Friend WithEvents Label1 As System.Windows.Forms.Label
+	Friend WithEvents Button1 As System.Windows.Forms.Button
+    Friend WithEvents Button2 As System.Windows.Forms.Button
+    Friend WithEvents TextBox1 As System.Windows.Forms.TextBox
+
+End Class
+
+
+
+
+
+
