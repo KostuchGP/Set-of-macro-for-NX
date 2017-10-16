@@ -1,0 +1,52 @@
+Option Strict Off
+Imports System
+Imports NXOpen
+ 
+Module Module1
+ 
+    Sub Main()
+ 
+        Dim theSession As Session = Session.GetSession()
+        Dim workPart As Part = theSession.Parts.Work
+        Dim lw As ListingWindow = theSession.ListingWindow
+        Dim myDocs As String
+        myDocs = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+        Dim outputFile As String = IO.Path.Combine(myDocs, "test.log")
+ 
+        'get information about current work part
+        Dim fileName As String = IO.Path.GetFileName(workPart.FullPath)
+        Dim fileNameNoExt As String = IO.Path.GetFileNameWithoutExtension(workPart.FullPath)
+        Dim parentFolder As String = IO.Path.GetDirectoryName(workPart.FullPath)
+        Dim root As String = IO.Path.GetPathRoot(workPart.FullPath)
+ 
+        '***** comment out this section to append to existing file *****
+        'does file already exist? if so, delete it
+        If IO.File.Exists(outputFile) Then
+            Try
+                IO.File.Delete(outputFile)
+            Catch ex As Exception
+                MsgBox(ex.Message, MsgBoxStyle.OkOnly, "Error deleting file:")
+            End Try
+        End If
+        '***** end of section *****
+ 
+        'use listing window to write to file and window
+        lw.SelectDevice(ListingWindow.DeviceType.FileAndWindow, outputFile)
+        lw.Open()
+ 
+        'write information to listing window
+        lw.WriteLine("full path: " & workPart.FullPath)
+        lw.WriteLine(New String("-", ("full path: " & workPart.FullPath).Length))
+        lw.WriteLine("file name: " & fileName)
+        lw.WriteLine("file name w/o extension: " & fileNameNoExt)
+        lw.WriteLine("parent folder: " & parentFolder)
+        lw.WriteLine("root folder: " & root)
+        lw.WriteLine("")
+ 
+        lw.Close()
+        'flush file buffer by changing listing window device
+        lw.SelectDevice(ListingWindow.DeviceType.Window, "")
+ 
+    End Sub
+ 
+End Module
